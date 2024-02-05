@@ -648,11 +648,7 @@ cmp.setup {
         },
         ['<Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
-                --I changed this to match VS
-                cmp.confirm {
-                    behavior = cmp.ConfirmBehavior.Replace,
-                    select = true,
-                }
+               luasnip.jump(1) 
             elseif luasnip.expand_or_locally_jumpable() then
                 luasnip.expand_or_jump()
             else
