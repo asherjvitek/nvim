@@ -114,7 +114,10 @@ require('lazy').setup({
 
             -- Adds a number of user-friendly snippets
             'rafamadriz/friendly-snippets',
+            "windwp/nvim-ts-autotag",
+            "windwp/nvim-autopairs",
         },
+
     },
 
     -- Useful plugin to show you pending keybinds.
@@ -258,6 +261,7 @@ require('lazy').setup({
         },
         build = ':TSUpdate',
     },
+    'RRethy/vim-illuminate',
 
     -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
     --       These are some example plugins that I've included in the kickstart repository.
@@ -621,10 +625,16 @@ mason_lspconfig.setup_handlers {
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
+local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
+
 require('luasnip.loaders.from_vscode').lazy_load()
+require('nvim-autopairs').setup()
+
 luasnip.config.setup {}
+
+cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 cmp.setup {
     snippet = {
@@ -642,7 +652,7 @@ cmp.setup {
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete {},
         ['<CR>'] = cmp.mapping.confirm {
-            behavior = cmp.ConfirmBehavior.Replace,
+            -- behavior = cmp.ConfirmBehavior.Replace,
             select = true,
         },
         ['<Tab>'] = cmp.mapping(function(fallback)
@@ -666,6 +676,9 @@ cmp.setup {
         { name = 'nvim_lsp' },
         { name = 'luasnip' },
         { name = 'path' },
+    },
+    experimental = {
+        ghost_text = true,
     },
 }
 
