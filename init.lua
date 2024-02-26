@@ -196,14 +196,20 @@ require('lazy').setup({
             end,
         },
     },
-
     {
-        -- Theme inspired by Atom
-        'Mofiqul/vscode.nvim',
+        'folke/tokyonight.nvim',
         priority = 1000,
         config = function()
-            vim.cmd.colorscheme 'vscode'
+            vim.cmd.colorscheme 'tokyonight'
         end,
+    },
+
+    {
+        'Mofiqul/vscode.nvim',
+        -- priority = 1000,
+        -- config = function()
+        --     vim.cmd.colorscheme 'vscode'
+        -- end,
     },
 
     {
