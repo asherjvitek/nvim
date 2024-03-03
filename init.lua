@@ -72,11 +72,6 @@ require('lazy').setup({
     -- Git related plugins
     'tpope/vim-fugitive',
     'tpope/vim-rhubarb',
-    {
-        "ThePrimeagen/harpoon",
-        branch = "harpoon2",
-        dependencies = { "nvim-lua/plenary.nvim" },
-    },
 
     -- Detect tabstop and shiftwidth automatically
     -- 'tpope/vim-sleuth',
@@ -112,6 +107,7 @@ require('lazy').setup({
             'hrsh7th/cmp-nvim-lsp',
             'hrsh7th/cmp-path',
 
+            'hrsh7th/cmp-nvim-lsp-signature-help',
             -- Adds a number of user-friendly snippets
             'rafamadriz/friendly-snippets',
             "windwp/nvim-ts-autotag",
@@ -267,7 +263,18 @@ require('lazy').setup({
         },
         build = ':TSUpdate',
     },
+
+    -- [[ Personal ]]
+    --This is what will illumiate the text that you cursor is currently on top of like what you get in VS or VSCode.
     'RRethy/vim-illuminate',
+    --This gives you a nice little left pane visual of the undotree.
+    'mbbill/undotree',
+    --This lets you "Harpoon" files for fast access
+    {
+        "ThePrimeagen/harpoon",
+        branch = "harpoon2",
+        dependencies = { "nvim-lua/plenary.nvim" },
+    },
 
     -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
     --       These are some example plugins that I've included in the kickstart repository.
@@ -293,6 +300,7 @@ vim.o.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
+vim.wo.relativenumber = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -300,6 +308,8 @@ vim.o.mouse = 'a'
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
+--  TODO: at some point I think that I would like to try no having this set this way and see how I like it.
+--  I think that using the registers a little better would be good.
 vim.o.clipboard = 'unnamedplus'
 
 -- Enable break indent
@@ -325,9 +335,12 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
-
-
-
+vim.o.scrolloff = 10
+vim.o.wrap = false
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+vim.o.shiftwidth = 4
+vim.o.expandtab = true
 
 -- [[ Basic Keymaps ]]
 
@@ -442,7 +455,20 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.defer_fn(function()
     require('nvim-treesitter.configs').setup {
         -- Add languages to be installed here that you want installed for treesitter
-        ensure_installed = { 'c', 'cpp', 'lua', 'javascript', 'vimdoc', 'vim', 'bash', 'c_sharp', 'xml', 'json', 'css', 'html' },
+        ensure_installed = {
+            'c',
+            'cpp',
+            'lua',
+            'javascript',
+            'vimdoc',
+            'vim',
+            'bash',
+            'c_sharp',
+            'xml',
+            'json',
+            'css',
+            'html'
+        },
 
         -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
         auto_install = false,
@@ -539,7 +565,7 @@ local on_attach = function(_, bufnr)
 
     -- See `:help K` for why this keymap
     nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-    -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+    nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
     -- Lesser used LSP functionality
     nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -605,6 +631,7 @@ local servers = {
 }
 
 -- Setup neovim lua configuration
+--I am sitll not completely sure what this does
 require('neodev').setup()
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
@@ -682,6 +709,7 @@ cmp.setup {
         { name = 'nvim_lsp' },
         { name = 'luasnip' },
         { name = 'path' },
+        { name = 'nvim_lsp_signature_help' },
     },
     experimental = {
         ghost_text = true,
@@ -691,21 +719,11 @@ cmp.setup {
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
-
---My settings
---Sets
-vim.o.scrolloff = 8
-vim.wo.relativenumber = true
-vim.o.wrap = false
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-
 --remaps
 --Personal
-vim.keymap.set("n", "<leader>pu", vim.cmd.pu, { desc = "[P]aste [U]nder line" })
-vim.keymap.set("n", "<leader>pa", "<cmd>pu!<CR>", { desc = "[P]aste [A]bove line" })
+--I have not been using these. removing for now.
+-- vim.keymap.set("n", "<leader>pu", vim.cmd.pu, { desc = "[P]aste [U]nder line" })
+-- vim.keymap.set("n", "<leader>pa", "<cmd>pu!<CR>", { desc = "[P]aste [A]bove line" })
 vim.keymap.set("n", "<leader>cp", "<cmd>let @+ = expand('%:p')<CR>", { desc = "[C]opy Current Buffer [Path]" })
 vim.keymap.set('n', '<leader>j', vim.cmd.Ex, { desc = ':Ex' })
 
@@ -725,17 +743,16 @@ vim.keymap.set("n", "N", "Nzzzv", { desc = 'Previous keep center' })
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], { desc = '[D]elete into void register' })
 vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, { desc = '[F]ormat current buffer with LSP' })
 
---From the Primeagen
 vim.keymap.set("n", "<leader>sc", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
     { desc = '[S]ubstitute [C]urrent word' })
-vim.keymap.set("v", "<leader>sc", [[y :%s/<C-r>"/<C-r>"/gI<Left><Left><Left>]])
-vim.keymap.set('n', '<leader>vpp', '<cmd>e ~/AppData/Local/nvim/init.lua<CR>', { desc = 'Edit nvim config' })
+vim.keymap.set("v", "<leader>sc", [[y :%s/<C-r>"/<C-r>"/gI<Left><Left><Left>]], { desc = '[S]ubstitute [C]urrent word' })
 
-vim.o.shell        = 'powershell'
+--Make it so that powershell is the default sheel that is used.
+vim.o.shell = 'powershell'
 vim.o.shellcmdflag =
 "-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';"
-vim.o.shellredir   = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
-vim.o.shellpipe    = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
+vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
+vim.o.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
 
 --I have not translated this because I could not figure out how to make these work.
 vim.cmd([[
@@ -753,14 +770,16 @@ local harpoon = require("harpoon")
 harpoon:setup({})
 -- REQUIRED
 
-vim.keymap.set("n", "<leader>m", function() harpoon:list():append() end)
-vim.keymap.set("n", "<C-h>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+vim.keymap.set("n", "<leader>ha", function() harpoon:list():append() end, { desc = '[H]arpoon [A]dd' })
+vim.keymap.set("n", "<leader>ho", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end,
+    { desc = '[H]arpoon [O]pen' })
 
-vim.keymap.set("n", "<C-J>", function() harpoon:list():select(1) end)
-vim.keymap.set("n", "<C-K>", function() harpoon:list():select(2) end)
-vim.keymap.set("n", "<C-L>", function() harpoon:list():select(3) end)
-vim.keymap.set("n", "<C-:>", function() harpoon:list():select(4) end)
+vim.keymap.set("n", "<A-a>", function() harpoon:list():select(1) end, { desc = 'Harpoon Item 1' })
+vim.keymap.set("n", "<A-s>", function() harpoon:list():select(2) end, { desc = 'Harpoon Item 2' })
+vim.keymap.set("n", "<A-d>", function() harpoon:list():select(3) end, { desc = 'Harpoon Item 3' })
+vim.keymap.set("n", "<A-f>", function() harpoon:list():select(4) end, { desc = 'Harpoon Item 4' })
+vim.keymap.set("n", "<A-g>", function() harpoon:list():select(5) end, { desc = 'Harpoon Item 5' })
 
 -- Toggle previous & next buffers stored within Harpoon list
--- vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
--- vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
+vim.keymap.set("n", "<leader>hn", function() harpoon:list():next() end, { desc = '[H]arpoon [N]ext' })
+vim.keymap.set("n", "<leader>hp", function() harpoon:list():prev() end, { desc = '[H]arpoon [P]revious' })
