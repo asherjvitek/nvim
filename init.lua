@@ -106,12 +106,14 @@ require('lazy').setup({
             -- Adds LSP completion capabilities
             'hrsh7th/cmp-nvim-lsp',
             'hrsh7th/cmp-path',
-
             'hrsh7th/cmp-nvim-lsp-signature-help',
+            'hrsh7th/cmp-buffer',
+            'hrsh7th/cmp-cmdline',
+
             -- Adds a number of user-friendly snippets
             'rafamadriz/friendly-snippets',
-            "windwp/nvim-ts-autotag",
-            "windwp/nvim-autopairs",
+            'windwp/nvim-ts-autotag',
+            'windwp/nvim-autopairs',
         },
 
     },
@@ -271,9 +273,9 @@ require('lazy').setup({
     'mbbill/undotree',
     --This lets you "Harpoon" files for fast access
     {
-        "ThePrimeagen/harpoon",
-        branch = "harpoon2",
-        dependencies = { "nvim-lua/plenary.nvim" },
+        'ThePrimeagen/harpoon',
+        branch = 'harpoon2',
+        dependencies = { 'nvim-lua/plenary.nvim' },
     },
 
     -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
@@ -663,7 +665,9 @@ local cmp = require 'cmp'
 local luasnip = require 'luasnip'
 
 require('luasnip.loaders.from_vscode').lazy_load()
-require('nvim-autopairs').setup()
+require('nvim-autopairs').setup({
+    disable_filetype = { "TelescopePrompt" , "vim", "ps1" },
+})
 
 luasnip.config.setup {}
 
@@ -679,8 +683,8 @@ cmp.setup {
         completeopt = 'menu,menuone,noinsert',
     },
     mapping = cmp.mapping.preset.insert {
-        -- ['<C-n>'] = cmp.mapping.select_next_item(),
-        -- ['<C-p>'] = cmp.mapping.select_prev_item(),
+        ['<C-n>'] = cmp.mapping.select_next_item(),
+        ['<C-p>'] = cmp.mapping.select_prev_item(),
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete {},
@@ -710,12 +714,34 @@ cmp.setup {
         { name = 'luasnip' },
         { name = 'path' },
         { name = 'nvim_lsp_signature_help' },
+        { name = 'buffer' },
     },
     experimental = {
         ghost_text = true,
     },
 }
 
+--not sure yet if these can be moved into the above configuration
+cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+        { name = 'buffer' }
+    }
+})
+
+cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+        { name = 'path' }
+    }, {
+        {
+            name = 'cmdline',
+            option = {
+                ignore_cmds = { 'Man', '!' }
+            }
+        }
+    })
+})
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
@@ -736,11 +762,18 @@ vim.keymap.set("n", "<C-S>", vim.cmd.w, { desc = "[S]ave File" })
 vim.keymap.set("v", "<A-Down>", ":m '>+1<CR>gv=gv", { desc = "Move text down" })
 vim.keymap.set("v", "<A-Up>", ":m '<-2<CR>gv=gv", { desc = "Move text up" })
 --End of the hate
+
+--Navigation quality of life
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = 'Half page down keep center' })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = 'Half page up keep center' })
 vim.keymap.set("n", "n", "nzzzv", { desc = 'Next keep center' })
 vim.keymap.set("n", "N", "Nzzzv", { desc = 'Previous keep center' })
+
+--Maniplulation into the void register instead of the default
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], { desc = '[D]elete into void register' })
+vim.keymap.set({ "n", "v" }, "<leader>c", [["_c]], { desc = '[C]hange into void register' })
+
+--buffer format
 vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, { desc = '[F]ormat current buffer with LSP' })
 
 vim.keymap.set("n", "<leader>sc", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
@@ -766,9 +799,7 @@ require 'lspconfig'.powershell_es.setup {
 
 local harpoon = require("harpoon")
 
--- REQUIRED
 harpoon:setup({})
--- REQUIRED
 
 vim.keymap.set("n", "<leader>ha", function() harpoon:list():append() end, { desc = '[H]arpoon [A]dd' })
 vim.keymap.set("n", "<leader>ho", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end,
