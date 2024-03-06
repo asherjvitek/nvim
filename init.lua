@@ -683,6 +683,7 @@ cmp.setup {
         completeopt = 'menu,menuone,noinsert',
     },
     mapping = cmp.mapping.preset.insert {
+        ['<C-a>'] = cmp.mapping.abort(),
         ['<C-n>'] = cmp.mapping.select_next_item(),
         ['<C-p>'] = cmp.mapping.select_prev_item(),
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -750,7 +751,13 @@ cmp.setup.cmdline(':', {
 --I have not been using these. removing for now.
 -- vim.keymap.set("n", "<leader>pu", vim.cmd.pu, { desc = "[P]aste [U]nder line" })
 -- vim.keymap.set("n", "<leader>pa", "<cmd>pu!<CR>", { desc = "[P]aste [A]bove line" })
-vim.keymap.set("n", "<leader>cp", "<cmd>let @+ = expand('%:p')<CR>", { desc = "[C]opy Current Buffer [Path]" })
+local copy_buffer_path = function ()
+    local path = vim.fn.expand("%:p")
+    path = path:gsub("/", "\\")
+    vim.fn.setreg('+', path)
+    print(path, "copied to register")
+end
+vim.keymap.set("n", "<leader>cp", function() copy_buffer_path() end, { desc = "[C]opy Current Buffer [P]ath" })
 vim.keymap.set('n', '<leader>j', vim.cmd.Ex, { desc = ':Ex' })
 
 --I think that this would likely make some people really mad....
