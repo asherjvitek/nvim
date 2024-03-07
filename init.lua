@@ -666,12 +666,27 @@ local luasnip = require 'luasnip'
 
 require('luasnip.loaders.from_vscode').lazy_load()
 require('nvim-autopairs').setup({
-    disable_filetype = { "TelescopePrompt" , "vim", "ps1" },
+    disable_filetype = { "TelescopePrompt", "vim" },
 })
 
 luasnip.config.setup {}
 
-cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+local handlers = require('nvim-autopairs.completion.handlers')
+cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({
+    filetypes = {
+        ps1 = {
+            ['('] = {
+                kind = {
+                    cmp.lsp.CompletionItemKind.Text,
+                    --This does not appear to be working in powershell 
+                    --for some reason.... At least with C# methods...
+                    cmp.lsp.CompletionItemKind.Method,
+                },
+                handler = handlers["*"]
+            }
+        }
+    }
+}))
 
 cmp.setup {
     snippet = {
@@ -689,11 +704,13 @@ cmp.setup {
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete {},
-        ['<CR>'] = cmp.mapping.confirm {
+
+        --I would like to try out have dedicated things for confirm and the moving through snippets
+        ['<C-y>'] = cmp.mapping.confirm {
             -- behavior = cmp.ConfirmBehavior.Replace,
             select = true,
         },
-        ['<Tab>'] = cmp.mapping(function(fallback)
+        ['<C-l>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 luasnip.jump(1)
             elseif luasnip.expand_or_locally_jumpable() then
@@ -702,7 +719,7 @@ cmp.setup {
                 fallback()
             end
         end, { 'i', 's' }),
-        ['<S-Tab>'] = cmp.mapping(function(fallback)
+        ['<C-h>'] = cmp.mapping(function(fallback)
             if luasnip.locally_jumpable(-1) then
                 luasnip.jump(-1)
             else
@@ -751,7 +768,7 @@ cmp.setup.cmdline(':', {
 --I have not been using these. removing for now.
 -- vim.keymap.set("n", "<leader>pu", vim.cmd.pu, { desc = "[P]aste [U]nder line" })
 -- vim.keymap.set("n", "<leader>pa", "<cmd>pu!<CR>", { desc = "[P]aste [A]bove line" })
-local copy_buffer_path = function ()
+local copy_buffer_path = function()
     local path = vim.fn.expand("%:p")
     path = path:gsub("/", "\\")
     vim.fn.setreg('+', path)
