@@ -338,11 +338,12 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 
 vim.o.scrolloff = 10
-vim.o.wrap = false
+vim.o.wrap = true
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 vim.o.expandtab = true
+vim.o.cursorline = true
 
 -- [[ Basic Keymaps ]]
 
@@ -678,7 +679,7 @@ cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({
             ['('] = {
                 kind = {
                     cmp.lsp.CompletionItemKind.Text,
-                    --This does not appear to be working in powershell 
+                    --This does not appear to be working in powershell
                     --for some reason.... At least with C# methods...
                     cmp.lsp.CompletionItemKind.Method,
                 },
@@ -838,3 +839,5 @@ vim.keymap.set("n", "<A-g>", function() harpoon:list():select(5) end, { desc = '
 -- Toggle previous & next buffers stored within Harpoon list
 vim.keymap.set("n", "<leader>hn", function() harpoon:list():next() end, { desc = '[H]arpoon [N]ext' })
 vim.keymap.set("n", "<leader>hp", function() harpoon:list():prev() end, { desc = '[H]arpoon [P]revious' })
+
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]xit Terminal Insert Mode' })
