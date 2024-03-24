@@ -1,5 +1,4 @@
 # My personal nvim config.....
 
-This is just from kickstart.nvim and I have modified it and uploaded it for my own use
 
-Test something....
+It is actually kinda my own now.. That is a little crazy. And really cool.
