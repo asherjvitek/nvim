@@ -766,17 +766,24 @@ mason_lspconfig.setup {
     ensure_installed = vim.tbl_keys(servers),
 }
 
+--I know there is a better way to do this but I am not sure what it is... So this will do for now.
 mason_lspconfig.setup_handlers {
     function(server_name)
-        require('lspconfig')[server_name].setup {
-            capabilities = capabilities,
-            on_attach = on_attach,
-            settings = servers[server_name],
-            filetypes = (servers[server_name] or {}).filetypes,
-        }
-
-        require('lspconfig').powershell_es.setup {
-            shell = 'powershell',
-        }
+        if server_name == 'powershell_es' then
+            require('lspconfig')[server_name].setup {
+                shell = 'powershell',
+                capabilities = capabilities,
+                on_attach = on_attach,
+                settings = servers[server_name],
+                filetypes = (servers[server_name] or {}).filetypes,
+            }
+        else
+            require('lspconfig')[server_name].setup {
+                capabilities = capabilities,
+                on_attach = on_attach,
+                settings = servers[server_name],
+                filetypes = (servers[server_name] or {}).filetypes,
+            }
+        end
     end,
 }
