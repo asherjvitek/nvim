@@ -594,6 +594,8 @@ vim.keymap.set("v", "<leader>sc", [[y :%s/<C-r>"/<C-r>"/gI<Left><Left><Left>]], 
 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]xit Terminal Insert Mode' })
 
+vim.api.nvim_create_user_command('FormatSql', '% !sql-formatter.cmd --config "C:\\Users\\avitek.HOME_OFFICE\\.sql-formatter.json"', { desc = 'Format current buffer with LSP' })
+
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -623,7 +625,8 @@ vim.defer_fn(function()
             'xml',
             'json',
             'css',
-            'html'
+            'html',
+            'sql'
         },
 
         -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
