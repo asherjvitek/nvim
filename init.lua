@@ -3,6 +3,7 @@
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.g.have_nerd_font = true
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    https://github.com/folke/lazy.nvim
@@ -483,12 +484,33 @@ require('lazy').setup({
             { "gR",         function() require("trouble").toggle("lsp_references") end },
         },
     }
-}, {})
+}, {
+    ui = {
+        -- If you are using a Nerd Font: set icons to an empty table which will use the
+        -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
+        icons = vim.g.have_nerd_font and {} or {
+            cmd = '⌘',
+            config = '🛠',
+            event = '📅',
+            ft = '📂',
+            init = '⚙',
+            keys = '🗝',
+            plugin = '🔌',
+            runtime = '💻',
+            require = '🌙',
+            source = '📄',
+            start = '🚀',
+            task = '📌',
+            lazy = '💤 ',
+        },
+    },
+})
 
 -- [[ Setting options ]]
 
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.opt.hlsearch = true
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Make line numbers default
 vim.wo.number = true
@@ -528,6 +550,13 @@ vim.o.shiftwidth = 4
 vim.o.expandtab = true
 vim.o.cursorline = true
 
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+
+vim.opt.timeoutlen = 300
+
+vim.opt.inccommand = 'split'
+
 --Make it so that powershell is the default sheel that is used.
 vim.o.shell = 'powershell'
 vim.o.shellcmdflag =
@@ -563,19 +592,28 @@ local copy_buffer_path = function()
     print(path, "copied to register")
 end
 
-vim.keymap.set("n", "<leader>cp", copy_buffer_path, { desc = "[C]opy Current Buffer [P]ath" })
+vim.keymap.set("n", "<leader>yp", copy_buffer_path, { desc = "[Y]ank Current Buffer [P]ath" })
 vim.keymap.set('n', '<leader>j', vim.cmd.Ex, { desc = ':Ex' })
 
 --I think that this would likely make some people really mad....
-vim.keymap.set("n", "<A-Left>", "<C-O>")
-vim.keymap.set("n", "<A-Right>", "<C-I>")
+-- vim.keymap.set("n", "<A-Left>", "<C-O>")
+-- vim.keymap.set("n", "<A-Right>", "<C-I>")
 vim.keymap.set({ "i", "c" }, "<C-H>", "<C-W>", { desc = "CTRL Backspace works like it does other places" })
-vim.keymap.set("n", "<C-S>", vim.cmd.w, { desc = "[S]ave File" })
+-- I would like to stop using this one so I am going to comment it out for now and make myself use :w more.
+-- Or maybe I would like a save all buffers or something.
+-- vim.keymap.set("n", "<C-S>", vim.cmd.w, { desc = "[S]ave File" })
 
 --This works in VS but I could not get J or K with this map to work there so we have this.
-vim.keymap.set("v", "<A-Down>", ":m '>+1<CR>gv=gv", { desc = "Move text down" })
-vim.keymap.set("v", "<A-Up>", ":m '<-2<CR>gv=gv", { desc = "Move text up" })
+vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move text down" })
+vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move text up" })
+vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move text down" })
+vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move text up" })
 --End of the hate
+
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 --Navigation quality of life
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = 'Half page down keep center' })
@@ -593,7 +631,9 @@ vim.keymap.set("v", "<leader>sc", [[y :%s/<C-r>"/<C-r>"/gI<Left><Left><Left>]], 
 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]xit Terminal Insert Mode' })
 
-vim.api.nvim_create_user_command('FormatSql', '% !sql-formatter.cmd --config "C:\\Users\\avitek.HOME_OFFICE\\.sql-formatter.json"', { desc = 'Format current buffer with LSP' })
+vim.api.nvim_create_user_command('FormatSql',
+    '% !sql-formatter.cmd --config "C:\\Users\\avitek.HOME_OFFICE\\.sql-formatter.json"',
+    { desc = 'Format current buffer with LSP' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -724,7 +764,7 @@ local on_attach = function(_, bufnr)
 
     -- See `:help K` for why this keymap
     nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-    nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+    -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
     -- Lesser used LSP functionality
     nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -753,7 +793,7 @@ local servers = {
         },
     },
     powershell_es = {
-        shell = "powershell"
+        shell = "powershell",
     }
 }
 
