@@ -794,6 +794,11 @@ local servers = {
     },
     powershell_es = {
         shell = "powershell",
+    },
+    tsserver = {
+        implicitProjectConfiguration = {
+            checkJs = true
+        },
     }
 }
 
