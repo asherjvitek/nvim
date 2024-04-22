@@ -557,17 +557,18 @@ vim.opt.timeoutlen = 300
 
 vim.opt.inccommand = 'split'
 
---Make it so that powershell is the default sheel that is used.
-vim.o.shell = 'powershell'
-vim.o.shellcmdflag =
-"-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';"
-vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
-vim.o.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
+--If we have powershell then we are on windows and would like to use that for our shell.
+if vim.fn.executable('powershell') == 1 then
+    --Make it so that powershell is the default sheel that is used.
+    vim.o.shell = 'powershell'
+    vim.o.shellcmdflag =
+    "-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';"
+    vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
+    vim.o.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
 
---I have not translated this because I could not figure out how to make these work.
-vim.cmd([[
-    set shellquote= shellxquote=
-]])
+    --I have not translated this because I could not figure out how to make these work.
+    vim.cmd([[ set shellquote= shellxquote= ]])
+end
 
 -- [[ Basic Keymaps ]]
 
@@ -792,15 +793,21 @@ local servers = {
             telemetry = { enable = false },
         },
     },
-    powershell_es = {
-        shell = "powershell",
-    },
-    tsserver = {
+}
+
+if vim.fn.executable('node') == 1 then
+    servers.tsserver = {
         implicitProjectConfiguration = {
             checkJs = true
         },
     }
-}
+end
+
+if vim.fn.executable('powershell') == 1 then
+    servers.powershell_es = {
+        shell = "powershell",
+    }
+end
 
 -- Setup neovim lua configuration
 require('neodev').setup()
