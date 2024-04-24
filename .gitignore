@@ -2,4 +2,4 @@ tags
 test.sh
 .luarc.json
 nvim
--lock.json
+lazy-lock.json
