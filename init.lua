@@ -33,6 +33,9 @@ require('lazy').setup({
     -- Git related plugins
     'tpope/vim-fugitive',
     'tpope/vim-rhubarb',
+    'tpope/vim-dadbod',
+    'kristijanhusak/vim-dadbod-completion',
+    'kristijanhusak/vim-dadbod-ui',
 
     -- Detect tabstop and shiftwidth automatically
     -- 'tpope/vim-sleuth',
@@ -156,6 +159,14 @@ require('lazy').setup({
                     ghost_text = true,
                 },
             }
+
+            --SQL dadbod for completion in sql
+            cmp.setup.filetype({ "sql"}, {
+                sources = {
+                    { name = "vim-dadbod-completion" },
+                    { name = "buffer" }
+                },
+            })
 
             --This gives me complete from inside the current buffer in the commandline
             cmp.setup.cmdline({ '/', '?' }, {
@@ -282,18 +293,18 @@ require('lazy').setup({
     },
     {
         'folke/tokyonight.nvim',
-        priority = 1000,
-        config = function()
-            vim.cmd.colorscheme 'tokyonight-night'
-        end,
+        -- priority = 1000,
+        -- config = function()
+        --     vim.cmd.colorscheme 'tokyonight-night'
+        -- end,
     },
 
     {
         'Mofiqul/vscode.nvim',
-        -- priority = 1000,
-        -- config = function()
-        --     vim.cmd.colorscheme 'vscode'
-        -- end,
+        priority = 1000,
+        config = function()
+            vim.cmd.colorscheme 'vscode'
+        end,
     },
 
     {
