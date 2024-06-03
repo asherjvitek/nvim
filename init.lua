@@ -154,19 +154,12 @@ require('lazy').setup({
                     { name = 'path' },
                     { name = 'nvim_lsp_signature_help' },
                     { name = 'buffer' },
+                    { name = "vim-dadbod-completion" },
                 },
                 experimental = {
                     ghost_text = true,
                 },
             }
-
-            --SQL dadbod for completion in sql
-            cmp.setup.filetype({ "sql"}, {
-                sources = {
-                    { name = "vim-dadbod-completion" },
-                    { name = "buffer" }
-                },
-            })
 
             --This gives me complete from inside the current buffer in the commandline
             cmp.setup.cmdline({ '/', '?' }, {
