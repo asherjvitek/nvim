@@ -122,16 +122,21 @@ require('lazy').setup({
                     completeopt = 'menu,menuone,noinsert',
                 },
                 mapping = cmp.mapping.preset.insert {
+                    -- I perfer the the commented out mapping but VS, SSMS and all the other things that I use for the rest of work 
+                    -- do not support those or all you to change them from what I can tell so for now we are going back to the default
+                    -- mappings that most other things have so that my brain can just work better in all places.
                     ['<C-a>'] = cmp.mapping.abort(),
-                    ['<C-n>'] = cmp.mapping.select_next_item(),
-                    ['<C-p>'] = cmp.mapping.select_prev_item(),
+                    -- ['<C-n>'] = cmp.mapping.select_next_item(),
+                    -- ['<C-p>'] = cmp.mapping.select_prev_item(),
                     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
                     ['<C-f>'] = cmp.mapping.scroll_docs(4),
                     ['<C-Space>'] = cmp.mapping.complete {},
-                    ['<C-y>'] = cmp.mapping.confirm {
+                    -- [<C-y>]
+                    ['<CR>'] = cmp.mapping.confirm {
                         select = true,
                     },
-                    ['<C-l>'] = cmp.mapping(function(fallback)
+                    -- [<C-l>]
+                    ['<Tab>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             luasnip.jump(1)
                         elseif luasnip.expand_or_locally_jumpable() then
@@ -140,7 +145,8 @@ require('lazy').setup({
                             fallback()
                         end
                     end, { 'i', 's' }),
-                    ['<C-h>'] = cmp.mapping(function(fallback)
+                    -- [<C-h>]
+                    ['<S-Tab>'] = cmp.mapping(function(fallback)
                         if luasnip.locally_jumpable(-1) then
                             luasnip.jump(-1)
                         else
