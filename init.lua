@@ -131,7 +131,7 @@ require('lazy').setup({
                     ['<C-y>'] = cmp.mapping.confirm {
                         select = true,
                     },
-                    ['<C-l'] = cmp.mapping(function(fallback)
+                    ['<C-l>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             luasnip.jump(1)
                         elseif luasnip.expand_or_locally_jumpable() then
@@ -140,7 +140,7 @@ require('lazy').setup({
                             fallback()
                         end
                     end, { 'i', 's' }),
-                    ['[<C-h>'] = cmp.mapping(function(fallback)
+                    ['<C-h>'] = cmp.mapping(function(fallback)
                         if luasnip.locally_jumpable(-1) then
                             luasnip.jump(-1)
                         else
