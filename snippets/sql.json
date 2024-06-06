@@ -1,0 +1,19 @@
+{
+    "ssf": {
+        "prefix": "ssf",
+        "body": [
+            "SELECT * FROM ${1:tableName}"
+        ],
+        "description": "SELECT * FROM"
+    },
+    "ssfw": {
+        "prefix": "ssfw",
+        "body": [
+            "SELECT",
+            "*",
+            "FROM ${1:tableName}",
+            "WHERE ${2:where}"
+        ],
+        "description": "SELECT * FROM"
+    }
+}

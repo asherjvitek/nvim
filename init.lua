@@ -89,9 +89,11 @@ require('lazy').setup({
             local luasnip = require 'luasnip'
 
             require('luasnip.loaders.from_vscode').lazy_load()
+            require("luasnip.loaders.from_vscode").lazy_load({ paths = { "./snippets" } })
             require('nvim-autopairs').setup({
                 disable_filetype = { "TelescopePrompt", "vim" },
             })
+
 
             luasnip.config.setup {}
 
@@ -613,12 +615,18 @@ vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move text down" })
 vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move text up" })
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move text down" })
 vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move text up" })
+
+
 --End of the hate
 
+-- Window maps
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+vim.keymap.set('n', '+', '<C-w>+', { desc = 'Increae Split Height' })
+vim.keymap.set('n', '-', '<C-w>-', { desc = 'Decrease Split Height' })
 
 --Navigation quality of life
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = 'Half page down keep center' })
