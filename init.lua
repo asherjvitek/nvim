@@ -36,6 +36,7 @@ require('lazy').setup({
     'tpope/vim-dadbod',
     'kristijanhusak/vim-dadbod-completion',
     'kristijanhusak/vim-dadbod-ui',
+    'stevearc/oil.nvim',
 
     -- Detect tabstop and shiftwidth automatically
     -- 'tpope/vim-sleuth',
@@ -600,7 +601,8 @@ local copy_buffer_path = function()
 end
 
 vim.keymap.set("n", "<leader>yp", copy_buffer_path, { desc = "[Y]ank Current Buffer [P]ath" })
-vim.keymap.set('n', '<leader>j', vim.cmd.Ex, { desc = ':Ex' })
+-- vim.keymap.set('n', '<leader>j', vim.cmd.Ex, { desc = ':Ex' })
+vim.keymap.set("n", "<leader>j", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 --I think that this would likely make some people really mad....
 -- vim.keymap.set("n", "<A-Left>", "<C-O>")
@@ -846,3 +848,5 @@ mason_lspconfig.setup_handlers {
         })
     end,
 }
+
+require('oil').setup();
