@@ -464,14 +464,14 @@ require('lazy').setup({
             vim.keymap.set("n", "<leader>ho", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end,
                 { desc = '[H]arpoon [O]pen' })
 
-            vim.keymap.set("n", "<A-f>", function() harpoon:list():select(1) end, { desc = 'Harpoon Item 1' })
-            vim.keymap.set("n", "<A-d>", function() harpoon:list():select(2) end, { desc = 'Harpoon Item 2' })
-            vim.keymap.set("n", "<A-s>", function() harpoon:list():select(3) end, { desc = 'Harpoon Item 3' })
-            vim.keymap.set("n", "<A-a>", function() harpoon:list():select(4) end, { desc = 'Harpoon Item 4' })
+            vim.keymap.set("n", "<M-j>", function() harpoon:list():select(1) end, { desc = 'Harpoon Item 1' })
+            vim.keymap.set("n", "<M-k>", function() harpoon:list():select(2) end, { desc = 'Harpoon Item 2' })
+            vim.keymap.set("n", "<M-l>", function() harpoon:list():select(3) end, { desc = 'Harpoon Item 3' })
+            vim.keymap.set("n", "<M-;>", function() harpoon:list():select(4) end, { desc = 'Harpoon Item 4' })
 
             -- Toggle previous & next buffers stored within Harpoon list
-            vim.keymap.set("n", "<leader>hn", function() harpoon:list():next() end, { desc = '[H]arpoon [N]ext' })
-            vim.keymap.set("n", "<leader>hp", function() harpoon:list():prev() end, { desc = '[H]arpoon [P]revious' })
+            vim.keymap.set("n", "<M-n>", function() harpoon:list():next() end, { desc = '[H]arpoon [N]ext' })
+            vim.keymap.set("n", "<M-p>", function() harpoon:list():prev() end, { desc = '[H]arpoon [P]revious' })
         end
     },
     {
@@ -626,18 +626,16 @@ vim.keymap.set("n", "<leader>yp", copy_buffer_path, { desc = "[Y]ank Current Buf
 vim.keymap.set("n", "<leader>j", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 --I think that this would likely make some people really mad....
--- vim.keymap.set("n", "<A-Left>", "<C-O>")
--- vim.keymap.set("n", "<A-Right>", "<C-I>")
 vim.keymap.set({ "i", "c" }, "<C-H>", "<C-W>", { desc = "CTRL Backspace works like it does other places" })
 -- I would like to stop using this one so I am going to comment it out for now and make myself use :w more.
 -- Or maybe I would like a save all buffers or something.
 -- vim.keymap.set("n", "<C-S>", vim.cmd.w, { desc = "[S]ave File" })
 
 --This works in VS but I could not get J or K with this map to work there so we have this.
-vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move text down" })
-vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move text up" })
-vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move text down" })
-vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move text up" })
+vim.keymap.set("v", "<A-Down>", ":m '>+1<CR>gv=gv", { desc = "Move text down" })
+vim.keymap.set("v", "<A-Up>", ":m '<-2<CR>gv=gv", { desc = "Move text up" })
+vim.keymap.set("n", "<A-Down>", ":m .+1<CR>==", { desc = "Move text down" })
+vim.keymap.set("n", "<A-Up>", ":m .-2<CR>==", { desc = "Move text up" })
 
 
 --End of the hate
