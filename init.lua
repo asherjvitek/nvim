@@ -364,13 +364,16 @@ require('lazy').setup({
             -- See `:help telescope` and `:help telescope.setup()`
             require('telescope').setup {
                 defaults = {
+                    layout_config = {
+                        horizontal = { width = .95, height = .99 }
+                    },
                     mappings = {
                         i = {
                             ['<C-u>'] = false,
                             ['<C-d>'] = false,
                         },
                     },
-                },
+                }
             }
 
             -- Enable telescope fzf native, if installed
@@ -488,7 +491,9 @@ require('lazy').setup({
     {
         "folke/trouble.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons" },
-        opts = {},
+        opts = {
+            focus = true
+        },
         cmd = "Trouble",
         keys = {
             {
@@ -499,7 +504,7 @@ require('lazy').setup({
             {
                 "<leader>xX",
                 "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-                desc = "Buffer Diagnostics (Trouble)",
+                desc = "Buffer Diagnostics (Trouble)"
             },
             {
                 "<leader>cs",
