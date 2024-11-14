@@ -653,6 +653,8 @@ vim.keymap.set("v", "<A-Up>", ":m '<-2<CR>gv=gv", { desc = "Move text up" })
 vim.keymap.set("n", "<A-Down>", ":m .+1<CR>==", { desc = "Move text down" })
 vim.keymap.set("n", "<A-Up>", ":m .-2<CR>==", { desc = "Move text up" })
 
+vim.keymap.set("n", "<leader>rt", ":%s/\t/    /g<CR>")
+
 
 --End of the hate
 
