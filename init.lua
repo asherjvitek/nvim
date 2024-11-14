@@ -683,9 +683,9 @@ vim.keymap.set("v", "<leader>sc", [[y :%s/<C-r>"/<C-r>"/gI<Left><Left><Left>]], 
 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]xit Terminal Insert Mode' })
 
-vim.api.nvim_create_user_command('FormatSql',
-    '% !sql-formatter.cmd --config "C:\\Users\\avitek.HOME_OFFICE\\.sql-formatter.json"',
-    { desc = 'Format current buffer with LSP' })
+vim.api.nvim_create_user_command('FormatRuleXml', '%s/&lt;/</g | %s/&gt;/>/g', { desc = 'Format Rule Xml' })
+
+vim.api.nvim_create_user_command('FormatElmahError', '%s/&#xD;&#xA;/\r/g', { desc = 'Format Elmah Error' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -846,13 +846,13 @@ local servers = {
     },
 }
 
-if vim.fn.executable('node') == 1 then
-    servers.tsserver = {
-        implicitProjectConfiguration = {
-            checkJs = true
-        },
-    }
-end
+-- if vim.fn.executable('node') == 1 then
+--     servers.tsserver = {
+--         implicitProjectConfiguration = {
+--             checkJs = true
+--         },
+--     }
+-- end
 
 if vim.fn.executable('powershell') == 1 then
     servers.powershell_es = {
