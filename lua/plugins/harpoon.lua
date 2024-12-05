@@ -8,14 +8,15 @@ return {
 
         harpoon:setup({})
 
-        vim.keymap.set("n", "<leader>ha", function() harpoon:list():add() end, { desc = '[H]arpoon [A]dd' })
-        vim.keymap.set("n", "<leader>ho", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end,
+        vim.keymap.set("n", "<M-a>", function() harpoon:list():add() end, { desc = '[H]arpoon [A]dd' })
+        vim.keymap.set("n", "<M-o>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end,
             { desc = '[H]arpoon [O]pen' })
 
-        vim.keymap.set("n", "<M-j>", function() harpoon:list():select(1) end, { desc = 'Harpoon Item 1' })
-        vim.keymap.set("n", "<M-k>", function() harpoon:list():select(2) end, { desc = 'Harpoon Item 2' })
-        vim.keymap.set("n", "<M-l>", function() harpoon:list():select(3) end, { desc = 'Harpoon Item 3' })
-        vim.keymap.set("n", "<M-;>", function() harpoon:list():select(4) end, { desc = 'Harpoon Item 4' })
+        vim.keymap.set("n", "<M-1>", function() harpoon:list():select(1) end, { desc = 'Harpoon Item 1' })
+        vim.keymap.set("n", "<M-2>", function() harpoon:list():select(2) end, { desc = 'Harpoon Item 2' })
+        vim.keymap.set("n", "<M-3>", function() harpoon:list():select(3) end, { desc = 'Harpoon Item 3' })
+        vim.keymap.set("n", "<M-4>", function() harpoon:list():select(4) end, { desc = 'Harpoon Item 4' })
+        vim.keymap.set("n", "<M-5>", function() harpoon:list():select(5) end, { desc = 'Harpoon Item 5' })
 
         -- Toggle previous & next buffers stored within Harpoon list
         vim.keymap.set("n", "<M-n>", function() harpoon:list():next() end, { desc = '[H]arpoon [N]ext' })
