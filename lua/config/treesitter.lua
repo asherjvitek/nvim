@@ -17,7 +17,8 @@ vim.defer_fn(function()
             'json',
             'css',
             'html',
-            'sql'
+            'sql',
+            'go'
         },
 
         -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
