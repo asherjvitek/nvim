@@ -37,6 +37,7 @@ require('lazy').setup({
             lazy = '💤 ',
         },
     },
+    change_detection = { notify = false }
 })
 
 require("config.init")
