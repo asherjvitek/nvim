@@ -56,6 +56,7 @@ local servers = {
             telemetry = { enable = false },
         },
     },
+    typos_lsp = {}
 }
 
 -- if vim.fn.executable('node') == 1 then
