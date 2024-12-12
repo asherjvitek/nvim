@@ -45,13 +45,13 @@ return {
         -- Clone every cursor and disable the originals.
         vim.keymap.set({ "n", "v" }, "<leader><c-q>", mc.duplicateCursors)
 
-        vim.keymap.set("n", "<leader><esc>", function()
+        vim.keymap.set("n", "<esc>", function()
             if not mc.cursorsEnabled() then
                 mc.enableCursors()
             elseif mc.hasCursors() then
                 mc.clearCursors()
             else
-                -- Default <esc> handler.
+                vim.cmd("nohlsearch")
             end
         end)
 

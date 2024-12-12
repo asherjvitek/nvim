@@ -2,7 +2,6 @@
 
 -- Set highlight on search
 vim.opt.hlsearch = true
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Make line numbers default
 vim.wo.number = true

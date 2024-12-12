@@ -59,3 +59,5 @@ vim.keymap.set("n", "<leader>sc", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left>
 vim.keymap.set("v", "<leader>sc", [[y :%s/<C-r>"/<C-r>"/gI<Left><Left><Left>]], { desc = '[S]ubstitute [C]urrent word' })
 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]xit Terminal Insert Mode' })
+-- We have multicursor handling this for the moment
+-- vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
