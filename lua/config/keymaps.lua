@@ -21,7 +21,7 @@ end
 
 vim.keymap.set("n", "<leader>yp", copy_buffer_path, { desc = "[Y]ank Current Buffer [P]ath" })
 -- vim.keymap.set('n', '<leader>j', vim.cmd.Ex, { desc = ':Ex' })
-vim.keymap.set("n", "<leader>j", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 --I think that this would likely make some people really mad....
 vim.keymap.set({ "i", "c" }, "<C-H>", "<C-W>", { desc = "CTRL Backspace works like it does other places" })
@@ -40,9 +40,6 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
-vim.keymap.set('n', '+', '<C-w>+', { desc = 'Increae Split Height' })
-vim.keymap.set('n', '-', '<C-w>-', { desc = 'Decrease Split Height' })
 
 --Navigation quality of life
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = 'Half page down keep center' })
