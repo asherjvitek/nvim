@@ -14,9 +14,9 @@ return {
 
         -- Add or skip adding a new cursor by matching word/selection
         vim.keymap.set({ "n", "v" }, "<leader>n", function() mc.matchAddCursor(1) end)
-        vim.keymap.set({ "n", "v" }, "<leader>s", function() mc.matchSkipCursor(1) end)
+        -- vim.keymap.set({ "n", "v" }, "<leader>s", function() mc.matchSkipCursor(1) end)
         vim.keymap.set({ "n", "v" }, "<leader>N", function() mc.matchAddCursor(-1) end)
-        vim.keymap.set({ "n", "v" }, "<leader>S", function() mc.matchSkipCursor(-1) end)
+        -- vim.keymap.set({ "n", "v" }, "<leader>S", function() mc.matchSkipCursor(-1) end)
 
         -- Add all matches in the document
         vim.keymap.set({ "n", "v" }, "<C-l>", mc.matchAllAddCursors)
