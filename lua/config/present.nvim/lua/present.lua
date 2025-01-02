@@ -12,7 +12,7 @@ local M = {}
 ---@class present.Slide
 ---@field title string:
 ---@field body string[]
-
+---@field block string[]: A codeblock inside of a slide
 
 M.setup = function(opts)
     opts = opts or {}
@@ -25,7 +25,7 @@ local create_window_configurations = function()
     local height = vim.o.lines
 
     local header_height = 1 + 2                                        --top and bottom border
-    local footer_height = 1                                            -- no border
+    local footer_height = 1                                            --no border
     local body_height = height - header_height - footer_height - 2 - 1 --top and bottom border
 
     return {
@@ -235,8 +235,6 @@ M.start_presentation = function(opts)
     configure_autocmds(restore)
     set_slide_content(state.current_slide)
 end
-
--- M.start_presentation({ bufnr = 27 })
 
 M._parse_slides = parse_slides
 
