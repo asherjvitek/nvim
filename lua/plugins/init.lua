@@ -4,9 +4,7 @@ return {
     'tpope/vim-dadbod',
     'kristijanhusak/vim-dadbod-completion',
     'kristijanhusak/vim-dadbod-ui',
-    'stevearc/oil.nvim',
-    -- 'tpope/vim-sleuth',
-    { 'numToStr/Comment.nvim', opts = {} },
+    'numToStr/Comment.nvim',
     'RRethy/vim-illuminate',
     'mbbill/undotree',
 }

@@ -10,13 +10,3 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     pattern = "*",
     desc = "Highlight when yanking text"
 })
-
-require("config.treesitter")
-require("config.lsp")
-
-require("oil").setup({
-    skip_confirm_for_simple_edits = true,
-    view_options = {
-        show_hidden = true,
-    }
-});
