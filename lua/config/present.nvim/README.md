@@ -2,6 +2,14 @@
 
 This is will present markdown files
 
+# Features
+
+Can execute code in lua blocks, when you have them in a slide
+
+```lua
+print("Hello world", 37, true)
+```
+
 # Usage
 ```
 require('present').start_presentation({})
@@ -17,9 +25,3 @@ Use `q` to quit
 
 teej_dv is the brains of this operation
 
-```
-require('present').start_presentation({})
-
-
-require('present').start_presentation({})
-```

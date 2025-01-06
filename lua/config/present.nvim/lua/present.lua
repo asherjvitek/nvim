@@ -12,7 +12,11 @@ local M = {}
 ---@class present.Slide
 ---@field title string:
 ---@field body string[]
----@field block string[]: A codeblock inside of a slide
+---@field blocks present.Block[]: A codeblock inside of a slide
+
+---@class present.Block
+---@field language string: the language of the code block
+---@field body string: The body of the code block
 
 M.setup = function(opts)
     opts = opts or {}
@@ -90,7 +94,8 @@ local parse_slides = function(lines)
     local slides = { slides = {} }
     local current_slide = {
         title = "",
-        body = {}
+        body = {},
+        blocks = {}
     }
 
     local separator = "^#"
@@ -103,7 +108,8 @@ local parse_slides = function(lines)
 
             current_slide = {
                 title = line,
-                body = {}
+                body = {},
+                blocks = {}
             }
         else
             table.insert(current_slide.body, line)
@@ -111,6 +117,31 @@ local parse_slides = function(lines)
     end
 
     table.insert(slides.slides, current_slide)
+
+    local block_indicator = "```"
+
+    for _, slide in ipairs(slides.slides) do
+        ---@type present.Block
+        local block = {
+            language = "",
+            body = ""
+        }
+        local inside_block = false
+
+        for _, line in ipairs(slide.body) do
+            if vim.startswith(line, block_indicator) then
+                if inside_block then
+                    inside_block = false
+                    table.insert(slide.blocks, block)
+                else
+                    inside_block = true
+                    block.language = string.sub(line, 4)
+                end
+            elseif inside_block then
+                block.body = block.body .. line .. "\n"
+            end
+        end
+    end
 
     return slides
 end
@@ -165,6 +196,61 @@ local configure_keymaps = function()
     present_keymap("q", function()
         vim.api.nvim_win_close(state.floats.body.win, true)
     end)
+
+    present_keymap("X", function()
+        local slide = state.parsed.slides[state.current_slide]
+        local block = slide.blocks[1]
+
+        if not block then
+            print("No blocks on this slide")
+        end
+
+        local original_print = print
+
+        local output = { "", "# Code", "", "```" .. block.language }
+        vim.list_extend(output, vim.split(block.body, "\n"))
+        table.insert(output, "```")
+
+        print = function(...)
+            local args = { ... }
+            local message = table.concat(vim.tbl_map(tostring, args), "\t")
+            table.insert(output, message)
+        end
+
+        local chunk = loadstring(block.body)
+
+        pcall(function()
+            table.insert(output, "")
+            table.insert(output, "# Output ")
+            table.insert(output, "")
+
+            if not chunk then
+                table.insert(output, "<<<BROKEN CODE>>>")
+            else
+                chunk()
+            end
+        end)
+
+        print = original_print
+
+        local temp_width = math.floor(vim.o.columns * 0.8)
+        local temp_height = math.floor(vim.o.lines * 0.8)
+
+        local buf = vim.api.nvim_create_buf(false, true)
+        local win = vim.api.nvim_open_win(buf, true, {
+            relative = "editor",
+            style = "minimal",
+            noautocmd = true,
+            width = temp_width,
+            height = temp_height,
+            row = math.floor((vim.o.lines - temp_height) / 2),
+            col = math.floor((vim.o.columns - temp_width) / 2),
+            border = "rounded",
+        })
+
+        vim.bo[buf].filetype = "markdown"
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, output)
+    end)
 end
 
 local configure_autocmds = function(restore)
@@ -209,6 +295,7 @@ M.start_presentation = function(opts)
     opts.bufnr = opts.bufnr or 0
 
     local lines = vim.api.nvim_buf_get_lines(opts.bufnr, 0, -1, false)
+
     state.parsed = parse_slides(lines)
     state.title = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(opts.bufnr), ":t")
     state.current_slide = 1
@@ -235,6 +322,8 @@ M.start_presentation = function(opts)
     configure_autocmds(restore)
     set_slide_content(state.current_slide)
 end
+
+-- M.start_presentation({ bufnr = 12 })
 
 M._parse_slides = parse_slides
 

@@ -58,3 +58,10 @@ vim.keymap.set("v", "<leader>sc", [[y :%s/<C-r>"/<C-r>"/gI<Left><Left><Left>]], 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]xit Terminal Insert Mode' })
 -- We have multicursor handling this for the moment
 -- vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = "*_spec.lua",
+    callback = function()
+        vim.keymap.set("n", "<leader>rt", "<cmd>PlenaryBustedFile %<CR>", { desc = "[R]un PlenaryBustedFile [T]est", buffer = vim.api.nvim_get_current_buf() })
+    end
+})
