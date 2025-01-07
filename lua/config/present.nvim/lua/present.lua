@@ -1,5 +1,56 @@
 local M = {}
 
+M.create_system_executor = function(program)
+    return function(block)
+        local tempfile = vim.fn.tempname()
+        vim.fn.writefile(vim.split(block.body, "\n"), tempfile)
+        local result = vim.system({ "node", tempfile }, { text = true }):wait()
+        return vim.split(result.stdout, "\n")
+    end
+end
+
+---@param block present.Block
+local execute_lua_code = function(block)
+    local output = {}
+    local original_print = print
+
+    print = function(...)
+        local args = { ... }
+        local message = table.concat(vim.tbl_map(tostring, args), "\t")
+        table.insert(output, message)
+    end
+
+    local chunk = loadstring(block.body)
+
+    pcall(function()
+        if not chunk then
+            table.insert(output, "<<<BROKEN CODE>>>")
+        else
+            chunk()
+        end
+    end)
+
+    print = original_print
+
+    return output
+end
+
+local options = {
+    executors = {
+        lua = execute_lua_code,
+        javascript = M.create_system_executor("node")
+    }
+}
+
+M.setup = function(opts)
+    opts = opts or {}
+    opts.executors = opts.executors or {}
+    opts.executors.lua = opts.executors.lua or execute_lua_code
+    opts.executors.javascript = opts.executors.javascript or M.create_system_executor("node")
+
+    options = opts
+end
+
 ---@class present.WindowConfigurations
 ---@field background vim.api.keyset.win_config
 ---@field header vim.api.keyset.win_config
@@ -18,9 +69,6 @@ local M = {}
 ---@field language string: the language of the code block
 ---@field body string: The body of the code block
 
-M.setup = function(opts)
-    opts = opts or {}
-end
 
 ---Create the windows that we are going to use
 ---@return present.WindowConfigurations
@@ -203,35 +251,26 @@ local configure_keymaps = function()
 
         if not block then
             print("No blocks on this slide")
+            return
         end
 
-        local original_print = print
+        local executor = options.executors[block.language]
+
+        if not executor then
+            print("No valid executor for the language " .. block.language)
+            return
+        end
 
         local output = { "", "# Code", "", "```" .. block.language }
         vim.list_extend(output, vim.split(block.body, "\n"))
         table.insert(output, "```")
 
-        print = function(...)
-            local args = { ... }
-            local message = table.concat(vim.tbl_map(tostring, args), "\t")
-            table.insert(output, message)
-        end
-
-        local chunk = loadstring(block.body)
-
-        pcall(function()
-            table.insert(output, "")
-            table.insert(output, "# Output ")
-            table.insert(output, "")
-
-            if not chunk then
-                table.insert(output, "<<<BROKEN CODE>>>")
-            else
-                chunk()
-            end
-        end)
-
-        print = original_print
+        table.insert(output, "")
+        table.insert(output, "# Output ")
+        table.insert(output, "")
+        table.insert(output, "```")
+        vim.list_extend(output, executor(block))
+        table.insert(output, "```")
 
         local temp_width = math.floor(vim.o.columns * 0.8)
         local temp_height = math.floor(vim.o.lines * 0.8)
@@ -250,6 +289,11 @@ local configure_keymaps = function()
 
         vim.bo[buf].filetype = "markdown"
         vim.api.nvim_buf_set_lines(buf, 0, -1, false, output)
+
+        vim.keymap.set("n", "q", function()
+            vim.api.nvim_win_close(win, true)
+        end, { buffer = buf })
+
     end)
 end
 
@@ -290,6 +334,7 @@ local configure_autocmds = function(restore)
     )
 end
 
+
 M.start_presentation = function(opts)
     opts = opts or {}
     opts.bufnr = opts.bufnr or 0
@@ -323,7 +368,8 @@ M.start_presentation = function(opts)
     set_slide_content(state.current_slide)
 end
 
--- M.start_presentation({ bufnr = 12 })
+
+M.start_presentation({ bufnr = 13 })
 
 M._parse_slides = parse_slides
 

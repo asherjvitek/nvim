@@ -10,6 +10,14 @@ Can execute code in lua blocks, when you have them in a slide
 print("Hello world", 37, true)
 ```
 
+# Features
+
+Can execute code in lua blocks, when you have them in a slide
+
+```javascript
+console.info({ myfield: "Hello world", number: 37, other: true })
+```
+
 # Usage
 ```
 require('present').start_presentation({})
