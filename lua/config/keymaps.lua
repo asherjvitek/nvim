@@ -71,4 +71,4 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 --quickfix
 vim.keymap.set('n', '<leader>qn', "<cmd>cnext<CR>", { desc = '[Q]uickfix [N]ext' })
-vim.keymap.set('n', '<leader>qp', "<cmd>cnext<CR>", { desc = '[Q]uickfix [P]revious' })
+vim.keymap.set('n', '<leader>qp', "<cmd>cprev<CR>", { desc = '[Q]uickfix [P]revious' })
