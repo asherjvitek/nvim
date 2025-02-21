@@ -10,7 +10,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+-- vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
 local copy_buffer_path = function()
     local path = vim.fn.expand("%:p")
@@ -47,9 +47,12 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = 'Half page up keep center' })
 vim.keymap.set("n", "n", "nzzzv", { desc = 'Next keep center' })
 vim.keymap.set("n", "N", "Nzzzv", { desc = 'Previous keep center' })
 
---Maniplulation into the void register instead of the default
-vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], { desc = '[D]elete into void register' })
-vim.keymap.set({ "n", "v" }, "<leader>c", [["_c]], { desc = '[C]hange into void register' })
+--Maniplulation into the P register instead of the default. this is like a secondary paste and delete that is not the clipboard.
+vim.keymap.set({ "n", "v" }, "<leader>y", [["py]], { desc = '[Y]ank into p register' })
+vim.keymap.set({ "n", "v" }, "<leader>p", [["pp]], { desc = '[P]aste below from p register' })
+vim.keymap.set({ "n", "v" }, "<leader>P", [["pP]], { desc = '[P]aste above from p register' })
+vim.keymap.set({ "n", "v" }, "<leader>d", [["pd]], { desc = '[D]elete into p register' })
+vim.keymap.set({ "n", "v" }, "<leader>c", [["pc]], { desc = '[C]hange into p register' })
 
 vim.keymap.set("n", "<leader>sc", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
     { desc = '[S]ubstitute [C]urrent word' })
@@ -65,3 +68,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
         vim.keymap.set("n", "<leader>rt", "<cmd>PlenaryBustedFile %<CR>", { desc = "[R]un PlenaryBustedFile [T]est", buffer = vim.api.nvim_get_current_buf() })
     end
 })
+
+--quickfix
+vim.keymap.set('n', '<leader>qn', "<cmd>cnext<CR>", { desc = '[Q]uickfix [N]ext' })
+vim.keymap.set('n', '<leader>qp', "<cmd>cnext<CR>", { desc = '[Q]uickfix [P]revious' })
