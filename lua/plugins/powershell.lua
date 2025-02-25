@@ -12,7 +12,7 @@ if vim.fn.executable('pwsh') == 0 then
 end
 
 return {
-    "asherjvitek/powershell.nvim",
+    "TheLeoP/powershell.nvim",
     ---@type powershell.user_config
     opts = {
         bundle_path = p_path,
