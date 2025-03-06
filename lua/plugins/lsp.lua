@@ -64,7 +64,12 @@ return {
             vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, { desc = '[F]ormat current buffer with LSP' })
         end
 
-        require('mason').setup()
+        require('mason').setup({
+            registries = {
+                'github:mason-org/mason-registry',
+                'github:crashdummyy/mason-registry',
+            }
+        })
         require('mason-lspconfig').setup()
 
         local servers = {
@@ -97,7 +102,7 @@ return {
         -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
         local capabilities = vim.lsp.protocol.make_client_capabilities()
         -- capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-       capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
+        capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
 
         -- Ensure the servers above are installed
         local mason_lspconfig = require 'mason-lspconfig'
