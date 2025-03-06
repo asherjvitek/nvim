@@ -41,7 +41,8 @@ return {
                 'css',
                 'html',
                 'sql',
-                'go'
+                'go',
+                'query'
             },
 
             -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
