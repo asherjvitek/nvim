@@ -14,9 +14,8 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open float
 
 local copy_buffer_path = function()
     local path = vim.fn.expand("%:p")
-    path = path:gsub("/", "\\")
     vim.fn.setreg('+', path)
-    print(path, "copied to register")
+    print(path, "copied to + register")
 end
 
 vim.keymap.set("n", "<leader>yp", copy_buffer_path, { desc = "[Y]ank Current Buffer [P]ath" })

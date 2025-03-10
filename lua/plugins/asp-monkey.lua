@@ -1,4 +1,4 @@
-local plugin_dir = "C:/Users/avitek/repos/asp-monkey.nvim/"
+local plugin_dir = vim.fs.normalize("~/repo/asp-monkey.nvim/")
 
 local fd, _, _ = vim.uv.fs_open(plugin_dir, "r", 438)
 

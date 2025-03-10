@@ -3,6 +3,7 @@ return {
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
         'nvim-treesitter/nvim-treesitter-textobjects',
+        'nvim-treesitter/playground',
     },
     build = ':TSUpdate',
     config = function()
@@ -52,7 +53,9 @@ return {
             -- List of parsers to ignore installing
             ignore_install = {},
             -- You can specify additional Treesitter modules here: -- For example: -- playground = {--enable = true,-- },
-            modules = {},
+            modules = {
+                playground = { enable = true }
+            },
             highlight = { enable = true },
             indent = { enable = true },
             incremental_selection = {

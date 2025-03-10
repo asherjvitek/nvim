@@ -45,6 +45,7 @@ return {
             completion = {
                 menu = {
                     auto_show = true,
+
                 }
             },
         },
