@@ -48,15 +48,20 @@ vim.opt.timeoutlen = 300
 
 vim.opt.inccommand = 'split'
 
---If we have powershell then we are on windows and would like to use that for our shell.
-if vim.fn.executable('powershell') == 1 then
-    --Make it so that powershell is the default sheel that is used.
-    vim.o.shell = 'powershell'
-    vim.o.shellcmdflag =
-    "-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';"
-    vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
-    vim.o.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
+if vim.loop.os_uname().sysname == 'Windows_NT' then
+    local util = require("util.powershell_util")
+    local powershell_shell = util.get_powershell_shell()
 
-    --I have not translated this because I could not figure out how to make these work.
-    vim.cmd([[ set shellquote= shellxquote= ]])
+    --If we have powershell then we are on windows and would like to use that for our shell.
+    if powershell_shell ~= nil then
+        --Make it so that powershell is the default sheel that is used.
+        vim.o.shell = powershell_shell
+        vim.o.shellcmdflag =
+        "-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';"
+        vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
+        vim.o.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
+
+        --I have not translated this because I could not figure out how to make these work.
+        vim.cmd([[ set shellquote= shellxquote= ]])
+    end
 end

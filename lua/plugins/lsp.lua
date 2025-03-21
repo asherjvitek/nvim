@@ -82,17 +82,12 @@ return {
             typos_lsp = {}
         }
 
-        -- if vim.fn.executable('node') == 1 then
-        --     servers.tsserver = {
-        --         implicitProjectConfiguration = {
-        --             checkJs = true
-        --         },
-        --     }
-        -- end
+        local util = require("util.powershell_util")
+        local powershell_shell = util.get_powershell_shell()
 
-        if vim.fn.executable('powershell') == 1 then
+        if powershell_shell ~= nil then
             servers.powershell_es = {
-                shell = "powershell",
+                shell = powershell_shell,
             }
         end
 
