@@ -1,6 +1,7 @@
 require("config.settings")
 require("config.keymaps")
 require("config.usercmd")
+require("config.diagnostic")
 
 vim.api.nvim_create_autocmd("TextYankPost", {
     callback = function()
