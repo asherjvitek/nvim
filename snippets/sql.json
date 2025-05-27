@@ -1,19 +1,49 @@
 {
-    "ssf": {
-        "prefix": "ssf",
-        "body": [
-            "SELECT * FROM ${1:tableName}"
-        ],
-        "description": "SELECT * FROM"
-    },
-    "ssfw": {
-        "prefix": "ssfw",
-        "body": [
-            "SELECT",
-            "*",
-            "FROM ${1:tableName}",
-            "WHERE ${2:where}"
-        ],
-        "description": "SELECT * FROM"
-    }
+  "ssf": {
+    "prefix": "ssf",
+    "body": [
+      "SELECT * FROM ${1:tableName}"
+    ],
+    "description": "SELECT * FROM"
+  },
+  "ssfw": {
+    "prefix": "ssfw",
+    "body": [
+      "SELECT",
+      "*",
+      "FROM ${1:tableName}",
+      "WHERE ${2:where}"
+    ],
+    "description": "SELECT * FROM"
+  },
+  "bcr": {
+    "prefix": "bcr",
+    "description": "BEGIN COMMIT ROLLBACK",
+    "body": "BEGIN TRAN\n${1:sql}\nIF @@ROWCOUNT = ${2:expected}\nCOMMIT TRAN ELSE ROLLBACK TRAN"
+  },
+  "fdm": {
+    "prefix": "FDM",
+    "description": "Find DataField Monker",
+    "body": "--Finds where Datafields live in either screens or in the path.\nDECLARE @DataFieldMoniker VARCHAR(100)\n\n--------------------------------- Enter Either Moniker of DataFiledID\nSET @DataFieldMoniker = '${1:Moniker}'\n---------------------------------\n\n--Finds Datafield on Path Task\nSELECT\n    rt.Name AS [Path],\n    rt.RoadmapTemplateId AS [PathId],\n    tiCategory.Label AS [Category],\n    tiTask.Label AS [Task],\n    tr.TaskRule AS [TaskRule],\n    tiDFL.Label AS [DataFiledLabel],\n    df.DataFieldId,\n    df.FieldDescription\nFROM\n    dbo.DataField df\n    LEFT JOIN dbo.TemplateItem tiDFL ON tiDFL.TypeId = df.DataFieldId\n    LEFT JOIN dbo.TemplateItem tiTask ON tiTask.TemplateItemId = tiDFL.ParentItem\n    LEFT JOIN dbo.Task t ON t.TaskId = tiTask.TypeId\n    LEFT JOIN dbo.TaskRule tr ON tr.TaskRuleId = t.TaskRuleId\n    LEFT JOIN dbo.TemplateItem tiCategory ON tiCategory.TemplateItemId = tiTask.ParentItem\n    LEFT JOIN dbo.RoadmapTemplate rt ON rt.RoadmapTemplateId = tiDFL.RoadmapTemplateId\nWHERE\n    df.FieldMoniker = @DataFieldMoniker\n    AND tiDFL.Type = 'DataField'\n\n--Find Moniker on Dynamic Screens\n--Note is Path/Category/Task are null that means the screen probably appears ourside the path\nSELECT\n    rt.Name AS [Path],\n    rt.RoadmapTemplateId AS [PathId],\n    tiPT.Label AS [Category],\n    tiPS.Label AS [Task],\n    s.Description AS [ScreenDescription],\n    s.Title AS [ScreenTitle],\n    s.ScreenId,\n    so.ClientName AS [ScreenOwner]\nFROM\n    dbo.ScreenFieldAssociation sfa\n    LEFT JOIN dbo.Screen s ON s.ScreenId = sfa.ScreenId\n    LEFT JOIN dbo.ScreenOwner so ON so.ScreenId = s.ScreenId\n    LEFT JOIN dbo.TemplateItem tiS ON tiS.TypeId = s.ScreenId AND tiS.Type = 'DynamicScreen'\n    LEFT JOIN dbo.TemplateItem tiPS ON tiPS.TemplateItemId = tiS.ParentItem\n    LEFT JOIN dbo.TemplateItem tiPT ON tiPT.TemplateItemId = tiPS.ParentItem\n    LEFT JOIN dbo.RoadmapTemplate rt ON rt.RoadmapTemplateId = tiS.RoadmapTemplateId\nWHERE\n    Moniker = @DataFieldMoniker"
+  },
+  "fdo": {
+    "prefix": "FDO",
+    "description": "Find document_order",
+    "body": "SELECT TOP (100)\n    *\nFROM\n    dbo.document_orders do\nWHERE\n    do.do_document_category LIKE '%${1:category}%'\nORDER BY\n    do.do_id DESC;"
+  },
+  "sdm": {
+    "prefix": "SDM",
+    "description": "SELECT DataField Moniker",
+    "body": "SELECT\n    *\nFROM\n    dbo.DataField df\n    LEFT JOIN dbo.DataFieldMapping dfm ON dfm.DataFieldId = df.DataFieldId\nWHERE \n    df.FieldMoniker = '${1:FieldMoniker}'"
+  },
+  "searchDB": {
+    "prefix": "searchDB",
+    "description": "Search DB for Text",
+    "body": "DECLARE @SearchStr NVARCHAR(100) = N'_WhatYouWantToSearchForHere_';\n\nDECLARE @Results TABLE\n(\n    ColumnName  NVARCHAR(370),\n    ColumnValue NVARCHAR(3630)\n);\n\nSET NOCOUNT ON;\n\nDECLARE\n    @TableName NVARCHAR(256),\n    @ColumnName NVARCHAR(128),\n    @SearchStr2 NVARCHAR(110);\nSET @TableName = N'';\nSET @SearchStr2 = QUOTENAME('%' + @SearchStr + '%', '''');\n\nWHILE @TableName IS NOT NULL\nBEGIN\n    SET @ColumnName = N'';\n    SET @TableName =\n    (\n        SELECT\n            MIN(QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME))\n        FROM\n            INFORMATION_SCHEMA.TABLES\n        WHERE\n            TABLE_TYPE = 'BASE TABLE'\n            AND QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME) > @TableName\n            AND OBJECTPROPERTY(OBJECT_ID(QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME)), 'IsMSShipped') = 0\n    );\n\n    WHILE(@TableName IS NOT NULL)\n         AND (@ColumnName IS NOT NULL)\n    BEGIN\n        SET @ColumnName =\n        (\n            SELECT\n                MIN(QUOTENAME(COLUMN_NAME))\n            FROM\n                INFORMATION_SCHEMA.COLUMNS\n            WHERE\n                TABLE_SCHEMA = PARSENAME(@TableName, 2)\n                AND TABLE_NAME = PARSENAME(@TableName, 1)\n                AND DATA_TYPE IN ( 'char', 'varchar', 'nchar', 'nvarchar' )\n                AND QUOTENAME(COLUMN_NAME) > @ColumnName\n        );\n\n        IF @ColumnName IS NOT NULL\n        BEGIN\n            INSERT INTO @Results\n            EXEC('SELECT ''' + @TableName + '.' + @ColumnName + ''', LEFT(' + @ColumnName + ', 3630) \n                    FROM ' + @TableName + ' (NOLOCK) ' + ' WHERE ' + @ColumnName + ' LIKE ' + @SearchStr2);\n        END;\n    END;\nEND;\n\nSELECT\n    ColumnName,\n    ColumnValue\nFROM\n    @Results\nORDER BY\n    ColumnName;\n"
+  },
+  "acq": {
+    "prefix": "acq",
+    "description": "All Client Query",
+    "body": "DECLARE @Results TABLE\n    (\n      DBName VARCHAR(128),\n      LoanId INT\n    )\n\nDECLARE @SQLString VARCHAR(8000)\nSET @SQLString = '\nIF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[loan_appl]'') AND type in (N''U''))\nBEGIN\n    SELECT TOP 1\n        DB_NAME(),\n        la_loan_appl_id\n    FROM\n        loan_appl\nEND;'\n\n\nSET nocount ON\n\nUSE master\n\nDECLARE @DBNames TABLE (RowCounter INT IDENTITY, DBName VARCHAR(50))\n\nINSERT INTO @DBNames\n        SELECT\n            name\n        FROM\n            sysdatabases\n        WHERE\n            dbid > 4\n            AND name NOT IN ( 'scripterrors', 'PASCAdmin', 'dbamaint', 'PASolutions', 'PAReporting', 'PAMonitoring', 'CBReporting', 'distribution', 'Billing', 'PWBDefaultClient' )\n        ORDER BY\n            name\n\nDECLARE @NumDBs INT, @CurrentDB VARCHAR(50), @DBCounter INT, @Statement VARCHAR(8000)\n\nSET @NumDBs = @@rowcount\n\nSET @DBCounter = 1\n\nWHILE ( @DBCounter <= @NumDBs )\n    BEGIN\n        SELECT @CurrentDB = DBName\n        FROM @DBNames\n        WHERE RowCounter = @DBCounter\n        \n        SET @Statement = 'use [' + @CurrentDB + '] ' + @SQLString\n        \n        INSERT INTO @Results EXEC ( @Statement )\n        \n        SET @DBCounter = @DBCounter + 1\n    END\n\nSELECT * FROM @Results ORDER BY DBName"
+  }
 }
