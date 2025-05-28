@@ -10,20 +10,10 @@ return {
             'j-hui/fidget.nvim',
             opts = {}
         },
-
-        'folke/neodev.nvim',
         'saghen/blink.cmp',
     },
     config = function()
-        -- [[ Configure LSP ]]
-        --  This function gets run when an LSP connects to a particular buffer.
         local on_attach = function(_, bufnr)
-            -- NOTE: Remember that lua is a real programming language, and as such it is possible
-            -- to define small helper and utility functions so you don't have to repeat yourself
-            -- many times.
-            --
-            -- In this case, we create a function that lets us more easily define mappings specific
-            -- for LSP related items. It sets the mode, buffer and description for us each time.
             local nmap = function(keys, func, desc)
                 if desc then
                     desc = 'LSP: ' .. desc
@@ -43,8 +33,6 @@ return {
             nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
             nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
-
-            -- See `:help K` for why this keymap
             nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
             -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
@@ -64,19 +52,17 @@ return {
             vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, { desc = '[F]ormat current buffer with LSP' })
         end
 
-        require('mason').setup({
-            registries = {
-                'github:mason-org/mason-registry',
-                'github:crashdummyy/mason-registry',
-            }
-        })
-        require('mason-lspconfig').setup()
-
         local servers = {
             lua_ls = {
                 Lua = {
                     workspace = { checkThirdParty = false },
                     telemetry = { enable = false },
+                    diagnostics = {
+                        globals = {
+                            'vim',
+                            'require',
+                        },
+                    },
                 },
             },
             typos_lsp = {}
@@ -91,32 +77,40 @@ return {
             }
         end
 
-        -- Setup neovim lua configuration
-        require('neodev').setup()
-
-        -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
         local capabilities = vim.lsp.protocol.make_client_capabilities()
-        -- capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
         capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
 
-        -- Ensure the servers above are installed
-        local mason_lspconfig = require 'mason-lspconfig'
+        require('mason').setup({
+            registries = {
+                'github:mason-org/mason-registry',
+                'github:crashdummyy/mason-registry',
+            }
+        })
 
-        mason_lspconfig.setup {
+        require('mason-lspconfig').setup {
             ensure_installed = vim.tbl_keys(servers),
-            automatic_installation = true
+            automatic_enable = true,
         }
 
-        mason_lspconfig.setup_handlers {
-            function(server_name)
-                require('lspconfig')[server_name].setup({
-                    shell = (servers[server_name] or {}).shell,
-                    capabilities = capabilities,
-                    on_attach = on_attach,
-                    settings = servers[server_name],
-                    filetypes = (servers[server_name] or {}).filetypes,
-                })
-            end,
-        }
+        for name, settings in pairs(servers) do
+            vim.lsp.config(name, {
+                on_attach = on_attach,
+                capabilities = capabilities,
+                shell = settings.shell,
+                settings = settings,
+            })
+        end
+
+        -- mason_lspconfig.setup_handlers {
+        --     function(server_name)
+        --         require('lspconfig')[server_name].setup({
+        --             shell = (servers[server_name] or {}).shell,
+        --             capabilities = capabilities,
+        --             on_attach = on_attach,
+        --             settings = servers[server_name],
+        --             filetypes = (servers[server_name] or {}).filetypes,
+        --         })
+        --     end,
+        -- }
     end
 }
