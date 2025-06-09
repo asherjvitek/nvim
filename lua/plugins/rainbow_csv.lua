@@ -1,6 +1,6 @@
 return {
-    -- 'cameron-wags/rainbow_csv.nvim',
-    dir = "~/repo/rainbow_csv.nvim",
+    'cameron-wags/rainbow_csv.nvim',
+    -- dir = "~/repo/rainbow_csv.nvim",
     config = true,
     ft = {
         'csv',
