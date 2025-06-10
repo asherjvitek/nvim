@@ -17,8 +17,27 @@ return {
         keymap = {
             preset = 'none',
             ['<C-d>'] = { 'show', 'show_documentation', 'hide_documentation' },
+            ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+
             ['<C-e>'] = { 'hide' },
             ['<C-y>'] = { 'select_and_accept' },
+
+            --Maybe change back to tab for things
+            ['<C-l>'] = { 'snippet_forward', 'fallback' },
+            ['<C-h>'] = { 'snippet_backward', 'fallback' },
+
+            ['<Tab>'] = {
+                function(cmp)
+                    if cmp.snippet_active() then
+                        return cmp.accept()
+                    else
+                        return cmp.select_and_accept()
+                    end
+                end,
+                'snippet_forward',
+                'fallback'
+            },
+            ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
 
             --removed Up and Down from this because that means that you can't type then use Up to go to the last in the history
             ['<C-p>'] = { 'select_prev', 'fallback' },
@@ -26,9 +45,6 @@ return {
 
             ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
             ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
-
-            ['<C-l>'] = { 'snippet_forward', 'fallback' },
-            ['<C-h>'] = { 'snippet_backward', 'fallback' },
 
             ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
         },
