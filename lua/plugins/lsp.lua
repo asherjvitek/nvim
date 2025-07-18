@@ -80,6 +80,20 @@ return {
         local capabilities = vim.lsp.protocol.make_client_capabilities()
         capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
 
+        -- default for all lsps
+        vim.lsp.config("*", {
+            on_attach = on_attach,
+            capabilities = capabilities,
+        })
+
+        -- lsp specific settings
+        for name, settings in pairs(servers) do
+            vim.lsp.config(name, {
+                shell = settings.shell,
+                settings = settings,
+            })
+        end
+
         require('mason').setup({
             registries = {
                 'github:mason-org/mason-registry',
@@ -92,25 +106,5 @@ return {
             automatic_enable = true,
         }
 
-        for name, settings in pairs(servers) do
-            vim.lsp.config(name, {
-                on_attach = on_attach,
-                capabilities = capabilities,
-                shell = settings.shell,
-                settings = settings,
-            })
-        end
-
-        -- mason_lspconfig.setup_handlers {
-        --     function(server_name)
-        --         require('lspconfig')[server_name].setup({
-        --             shell = (servers[server_name] or {}).shell,
-        --             capabilities = capabilities,
-        --             on_attach = on_attach,
-        --             settings = servers[server_name],
-        --             filetypes = (servers[server_name] or {}).filetypes,
-        --         })
-        --     end,
-        -- }
     end
 }
