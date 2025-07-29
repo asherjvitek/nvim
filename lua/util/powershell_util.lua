@@ -6,7 +6,7 @@ M.get_powershell_shell = function ()
     local have_pwsh = vim.fn.executable('pwsh');
     local have_powershell = vim.fn.executable('powershell');
 
-    if have_pwsh then
+    if have_pwsh == 1 then
         powershell_shell = "pwsh"
     end
 
