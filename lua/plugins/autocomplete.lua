@@ -17,9 +17,8 @@ return {
         keymap = {
             preset = 'none',
             ['<C-d>'] = { 'show', 'show_documentation', 'hide_documentation' },
-            ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
 
-            ['<C-e>'] = { 'hide' },
+            ['<C-e>'] = { 'show', 'hide' },
             ['<C-y>'] = { 'select_and_accept' },
 
             --Maybe change back to tab for things
@@ -39,6 +38,8 @@ return {
             },
             ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
 
+            ['<C-s>'] = { function(cmp) cmp.show({ providers = { 'snippets' } }) end },
+
             --removed Up and Down from this because that means that you can't type then use Up to go to the last in the history
             ['<C-p>'] = { 'select_prev', 'fallback' },
             ['<C-n>'] = { 'select_next', 'fallback' },
@@ -57,11 +58,11 @@ return {
             },
         },
 
+
         cmdline = {
             completion = {
                 menu = {
                     auto_show = true,
-
                 }
             },
         },

@@ -8,9 +8,10 @@ local state = {
 -- Function to open a floating window with a specified percentage size
 local function open_floating_window(opts)
     opts = opts or {}
+
     -- Get the screen width and height
-    local screen_width = vim.api.nvim_get_option('columns')
-    local screen_height = vim.api.nvim_get_option('lines')
+    local screen_width = vim.opt.columns:get()
+    local screen_height = vim.opt.lines:get()
 
     -- Set the percentage of screen space for width and height
     local width_percentage = 0.85  -- 40% of the screen width

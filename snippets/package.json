@@ -1,14 +1,22 @@
 {
-    "name": "custom-snippets",
-    "engine": {
-        "vscode": "^1.11.0"
-    },
-    "contributes": {
-        "snippets": [
-            {
-                "language": "sql",
-                "path": "sql.json"
-            }
-        ]
-    }
+  "name": "custom-snippets",
+  "engine": {
+    "vscode": "^1.11.0"
+  },
+  "contributes": {
+    "snippets": [
+      {
+        "language": "sql",
+        "path": "sql.json"
+      },
+      {
+        "language": "xml",
+        "path": "xml.json"
+      },
+      {
+        "language": "xslt",
+        "path": "xml.json"
+      }
+    ]
+  }
 }

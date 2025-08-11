@@ -1,0 +1,9 @@
+{
+  "tag": {
+    "prefix": ["tag", "t"],
+    "body": [
+      "<${1:tagName}>${2:content}</${1:tagName}>"
+    ],
+    "description": "tag"
+  }
+}
