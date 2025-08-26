@@ -2,7 +2,7 @@
   "ssf": {
     "prefix": "ssf",
     "body": [
-      "SELECT * FROM ${1:tableName}"
+      "SELECT * FROM "
     ],
     "description": "SELECT * FROM"
   },
